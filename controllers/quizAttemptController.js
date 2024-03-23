@@ -26,16 +26,18 @@ const quizAttemptController = {
   },
 
   updateQuizAttemptScore: async (req, res) => {
-    const { attemptId, score } = req.body;
+    const { id, score } = req.body;
     try {
-      const updatedAttempt = await UserQuizAttempt.findByIdAndUpdate(
-        attemptId,
-        { score },
-        { new: true }
-      );
+      const updatedAttempt = await UserQuizAttempt.findOne({ user: id });
       if (!updatedAttempt) {
-        return res.status(404).json({ error: "Quiz attempt not found" });
+        const newAttempt = await UserQuizAttempt.create({
+          user: id,
+          score,
+        });
+        return res.status(201).json(newAttempt);
       }
+      updatedAttempt.score += score;
+      await updatedAttempt.save();
       return res.status(200).json(updatedAttempt);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -59,9 +61,13 @@ const quizAttemptController = {
     try {
       const result = await userQuizAttemptModel
         .find()
-        .populate("user")
+        .populate({
+          path: "user",
+        })
         .limit(10)
-        .sort({ score: -1 });
+        .sort({ score: -1 })
+        .exec();
+
       return res.status(200).json(result);
     } catch (error) {
       return res.status(500).json(error);

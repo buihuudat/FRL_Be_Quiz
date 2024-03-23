@@ -23,12 +23,17 @@ const authController = {
   },
 
   register: async (req, res) => {
-    const email = req.body.email;
+    const { email, username } = req.body;
     try {
       const user = await User.findOne({ email });
       if (user) {
         return res.status(401).json({ message: "Email already exists" });
       }
+      const user2 = await User.findOne({ username });
+      if (user2) {
+        return res.status(401).json({ message: "Username already exists" });
+      }
+
       const newUser = await User.create(req.body);
       const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
       return res.status(200).json({ user: newUser, token });

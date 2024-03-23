@@ -10,8 +10,8 @@ const { verifyToken, isAdmin, isUser } = require("../middleware");
 const router = express.Router();
 
 router.post("/", verifyToken, isUser, createQuizAttempt);
-router.put("/", verifyToken, isAdmin, updateQuizAttemptScore);
+router.put("/", verifyToken, updateQuizAttemptScore);
 router.get("/:userId", verifyToken, isUser, getQuizAttemptsForUser);
-router.get("/", verifyToken, isAdmin, getAllQuizAttempts);
+router.get("/", verifyToken, getAllQuizAttempts);
 
 module.exports = router;

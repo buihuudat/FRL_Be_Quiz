@@ -55,7 +55,12 @@ const quizController = {
     }
 
     try {
-      const quizzes = await Quiz.find(query).limit(req.query.number);
+      let pipeline = [
+        { $match: query },
+        { $sample: { size: parseInt(req.query.number) } },
+      ];
+      const quizzes = await Quiz.aggregate(pipeline);
+
       return res.status(200).json(quizzes);
     } catch (error) {
       return res.status(500).json(error);

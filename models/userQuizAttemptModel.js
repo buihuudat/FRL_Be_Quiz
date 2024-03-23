@@ -6,10 +6,6 @@ const userQuizAttemptSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    quiz: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Quiz",
-    },
     score: {
       type: Number,
       default: 0,
